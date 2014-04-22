@@ -1,0 +1,42 @@
+{
+	"host": "localhost",
+	"port": 443,
+	"tls": true,
+	"path": "/",
+	"url-params": {
+		"uid": [
+			{
+				"value": "admin"
+			},
+			{
+				"increment": {
+					"start": 0,
+					"stop": 10,
+					"step": 1
+				}
+			}
+		],
+		"gid": [
+			{
+				"increment": {
+					"start": 0,
+					"stop": 10,
+					"step": 1
+				}
+			}
+		]
+	},
+	"header-params": {
+		"Host": [
+			{
+				"value": "www.example.com"
+			}
+		]
+	},
+	"cookie-params": {
+		"session-id": [
+			{
+			}
+		]
+	}
+}
