@@ -225,7 +225,6 @@ func processRequests(done <-chan struct{}, requests <-chan *http.Request, respon
 		select {
 		case responses <- httpResponse{request, response, err}:
 		case <-done:
-			fmt.Println("1")
 			return
 		}
 	}
