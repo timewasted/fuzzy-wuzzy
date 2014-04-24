@@ -24,30 +24,30 @@ func NewValueFuzzer() Fuzzer {
 	return &ValueFuzzer{}
 }
 
-func (a *ValueFuzzer) Type() string {
+func (f *ValueFuzzer) Type() string {
 	return valueFuzzerRegisteredName
 }
 
-func (a *ValueFuzzer) Configure(config interface{}) (err error) {
+func (f *ValueFuzzer) Configure(config interface{}) (err error) {
 	value, ok := config.(string)
 	if !ok {
 		return fmt.Errorf(errConfigureWrongType, valueFuzzerName, "config")
 	}
-	a.value = value
+	f.value = value
 
 	return
 }
 
-func (a *ValueFuzzer) Reset() {
-	a.finished = false
+func (f *ValueFuzzer) Reset() {
+	f.finished = false
 }
 
-func (a *ValueFuzzer) Next() (value string, finished bool) {
+func (f *ValueFuzzer) Next() (value string, finished bool) {
 	// FIXME: Verify that Configure() was successfully called?
-	finished = a.finished
-	if !a.finished {
-		a.finished = true
-		value = a.value
+	finished = f.finished
+	if !f.finished {
+		f.finished = true
+		value = f.value
 	}
 	return
 }

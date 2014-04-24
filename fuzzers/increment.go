@@ -30,11 +30,11 @@ func NewIncrementFuzzer() Fuzzer {
 	return &IncrementFuzzer{}
 }
 
-func (a *IncrementFuzzer) Type() string {
+func (f *IncrementFuzzer) Type() string {
 	return incrementFuzzerRegisteredName
 }
 
-func (a *IncrementFuzzer) Configure(config interface{}) (err error) {
+func (f *IncrementFuzzer) Configure(config interface{}) (err error) {
 	c, ok := config.(map[string]interface{})
 	if !ok {
 		return fmt.Errorf(errConfigureWrongType, incrementFuzzerName, "config")
@@ -76,32 +76,32 @@ func (a *IncrementFuzzer) Configure(config interface{}) (err error) {
 		return fmt.Errorf("%s Configure: step can not be zero.", incrementFuzzerName)
 	}
 
-	a.start = start
-	a.stop = stop + step
-	a.step = step
+	f.start = start
+	f.stop = stop + step
+	f.step = step
 
-	a.defaults.start = a.start
-	a.defaults.stop = a.stop
-	a.defaults.step = a.step
+	f.defaults.start = f.start
+	f.defaults.stop = f.stop
+	f.defaults.step = f.step
 
 	return
 }
 
-func (a *IncrementFuzzer) Reset() {
-	a.finished = false
-	a.start = a.defaults.start
-	a.stop = a.defaults.stop
-	a.step = a.defaults.step
+func (f *IncrementFuzzer) Reset() {
+	f.finished = false
+	f.start = f.defaults.start
+	f.stop = f.defaults.stop
+	f.step = f.defaults.step
 }
 
-func (a *IncrementFuzzer) Next() (value string, finished bool) {
+func (f *IncrementFuzzer) Next() (value string, finished bool) {
 	// FIXME: Verify that Configure() was successfully called?
-	finished = a.finished
-	if !a.finished {
-		value = strconv.FormatInt(a.start, 10)
-		a.start += a.step
-		if a.start == a.stop {
-			a.finished = true
+	finished = f.finished
+	if !f.finished {
+		value = strconv.FormatInt(f.start, 10)
+		f.start += f.step
+		if f.start == f.stop {
+			f.finished = true
 		}
 	}
 	return
