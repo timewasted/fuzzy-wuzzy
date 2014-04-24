@@ -8,6 +8,7 @@ It should probably be noted that this is a work in progress.  It has a few built
 The (very) rough to-do list looks something like:
 
 * Make it care about the responses.  I'm thinking it'll grab the important bits (status code, headers, body, etc) and stuff them into a SQLite database.
+* Support request types other than GET.
 * More fuzzers!  Inserting a user-defined list of strings would be a nice start.
 
 License:
