@@ -29,6 +29,7 @@ type configuration struct {
 	Port         uint          `json:"port"`
 	TLS          bool          `json:"tls"`
 	Path         string        `json:"path"`
+	PathParams   parameterList `json:"path-params"`
 	URLParams    parameterList `json:"url-params"`
 	HeaderParams parameterList `json:"header-params"`
 	CookieParams parameterList `json:"cookie-params"`
@@ -82,6 +83,9 @@ func validateConfig(config *configuration) (err error) {
 		config.Path = "/"
 	}
 
+	if err = validateFuzzers("path", config.PathParams); err != nil {
+		return
+	}
 	if err = validateFuzzers("url", config.URLParams); err != nil {
 		return
 	}
@@ -120,7 +124,7 @@ func validateFuzzers(paramType string, params parameterList) (err error) {
 
 				paramFuzzers = append(paramFuzzers, paramFuzzer{
 					paramType: paramType,
-					param:     param,
+					param:     string(param),
 					Fuzzer:    fuzzer,
 				})
 			}

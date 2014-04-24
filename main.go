@@ -13,6 +13,7 @@ import (
 	"net/url"
 	"os"
 	"os/signal"
+	"strings"
 	"sync"
 	"syscall"
 )
@@ -112,9 +113,7 @@ func queueRequests(config *configuration, done <-chan struct{}) (<-chan *http.Re
 		defer close(requests)
 
 		// Build the basic URL.
-		reqUrl := &url.URL{
-			Path: config.Path,
-		}
+		reqUrl := &url.URL{}
 		if !config.TLS {
 			reqUrl.Scheme = "http"
 		} else {
@@ -127,6 +126,7 @@ func queueRequests(config *configuration, done <-chan struct{}) (<-chan *http.Re
 		}
 
 		var reqParams = requestParameters{
+			"path":   map[string]string{},
 			"url":    map[string]string{},
 			"header": map[string]string{},
 			"cookie": map[string]string{},
@@ -143,7 +143,7 @@ func queueRequests(config *configuration, done <-chan struct{}) (<-chan *http.Re
 			value, _ := fuzzer.Next()
 			reqParams[fuzzer.paramType][fuzzer.param] = value
 		}
-		request, err := newRequest(reqUrl, reqParams)
+		request, err := newRequest(config.Path, reqUrl, reqParams)
 		if err != nil {
 			errc <- err
 			return
@@ -173,7 +173,7 @@ func queueRequests(config *configuration, done <-chan struct{}) (<-chan *http.Re
 				continue
 			}
 			reqParams[fuzzer.paramType][fuzzer.param] = value
-			request, err = newRequest(reqUrl, reqParams)
+			request, err = newRequest(config.Path, reqUrl, reqParams)
 			if err != nil {
 				errc <- err
 				return
@@ -192,7 +192,17 @@ func queueRequests(config *configuration, done <-chan struct{}) (<-chan *http.Re
 	return requests, errc
 }
 
-func newRequest(reqUrl *url.URL, reqParams requestParameters) (req *http.Request, err error) {
+func newRequest(path string, reqUrl *url.URL, reqParams requestParameters) (req *http.Request, err error) {
+	reqUrl.Path = path
+	pathParams := []string{}
+	for key, value := range reqParams["path"] {
+		pathParams = append(pathParams, key, value)
+	}
+	if len(pathParams) > 0 {
+		replacer := strings.NewReplacer(pathParams...)
+		reqUrl.Path = replacer.Replace(path)
+	}
+
 	urlValues := url.Values{}
 	for key, value := range reqParams["url"] {
 		urlValues.Add(key, value)

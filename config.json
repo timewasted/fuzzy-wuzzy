@@ -2,7 +2,18 @@
 	"host": "localhost",
 	"port": 443,
 	"tls": true,
-	"path": "/",
+	"path": "/:pageid/",
+	"path-params": {
+		":pageid": [
+			{
+				"increment": {
+					"start": 0,
+					"stop": 10,
+					"step": 1
+				}
+			}
+		]
+	},
 	"url-params": {
 		"uid": [
 			{
